@@ -15,6 +15,8 @@ class Square : public QWidget {
 
 public:
     explicit Square(QPieSlice& slice, QPieSeries& pieSeries , QWidget* parent = nullptr);
+
+    //Set up parammeter
     void setColor(QString& hexColor); 
     void setText(QString& text);
 private:
@@ -22,8 +24,8 @@ private:
     bool isHovered = false;
     QColor* color;
     QString* textDraw;
-    QPieSlice& activePieSlice;
-    QPieSeries& pieSeries;
+    QPieSlice& m_activePieSlice;
+    QPieSeries& m_pieSeries;
     int rectWidth = 120;
     int rectHeight = 30;
     int squareSize = 20;

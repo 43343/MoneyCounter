@@ -40,10 +40,12 @@ ChangeTypeDate::ChangeTypeDate(int& activeIndex, QWidget* parent) :
 
     QPushButton* okBtn = new QPushButton("OK");
     okBtn->setMinimumHeight(20);
+    okBtn->setStyleSheet("background-color: #23A75D; color: white;");
     connect(okBtn, &QPushButton::clicked, this, &QDialog::accept);
     layout->addWidget(okBtn);
     QPushButton* cancelBtn = new QPushButton(QStringLiteral("Cancel"));
     cancelBtn->setMinimumHeight(20);
+    cancelBtn->setStyleSheet("background-color: #A72323; color: white;");
     connect(cancelBtn, &QPushButton::clicked, this, &QDialog::reject);
     layout->addWidget(cancelBtn);
 

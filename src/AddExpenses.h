@@ -1,12 +1,12 @@
 #pragma once
 #include <QDialog>
-#include <QBoxLayout>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QRegularExpressionValidator>
 #include <QComboBox>
-#include <QCalendarWidget>
 #include <QDateEdit>
+#include <QFormLayout>
+#include <QLabel>
+#include "DatabaseManager.h"
 #include "CategoryData.h"
 
 class AddExpenses : public QDialog {
@@ -15,16 +15,29 @@ class AddExpenses : public QDialog {
 public:
     explicit AddExpenses(Category* category = (Category*)nullptr, QWidget* parent = (QWidget*)nullptr);
 
+    //Get information about expense
     QString getInput() const;
     QString getCategory() const;
     QDate getDate() const;
-
-signals:
-    void applied();
+    QString getColor() const;
 
 private:
-    QLineEdit* m_edit;
-    QDateEdit* dateEdit;
+    QFormLayout* formLayout; 
+
+    QLineEdit* amountEdit;
+
     QComboBox* comboBox;
-    Category& category;
+    void onCategoryChanged(int index);
+    Category& m_category;
+
+    QLineEdit* newCategoryNameEdit;
+    bool isNewCategory = false;
+    QLabel* categoryNameLabel;
+    QPushButton* categoryColorEdit;
+    QString categoryColor;
+    void showColorDialog();
+
+    QDateEdit* dateEdit;
+    
+    void accepted();
 };

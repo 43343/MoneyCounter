@@ -1,10 +1,10 @@
 #include "Square.h"
 
 
-Square::Square(QPieSlice& slice, QPieSeries& pieSeries, QWidget* parent) : QWidget(parent), activePieSlice(slice), pieSeries(pieSeries)
+Square::Square(QPieSlice& slice, QPieSeries& pieSeries, QWidget* parent) : QWidget(parent), m_activePieSlice(slice), m_pieSeries(pieSeries)
 {
     setFixedSize(rectWidth + 1, rectHeight + 1);
-    connect(&activePieSlice, &QPieSlice::hovered, this, &Square::pieScliceActive);
+    connect(&m_activePieSlice, &QPieSlice::hovered, this, &Square::pieScliceActive);
 }
 
 void Square::paintEvent(QPaintEvent* event) {
@@ -34,21 +34,21 @@ void Square::paintEvent(QPaintEvent* event) {
 
 void Square::enterEvent(QEnterEvent* event)  {
     isHovered = true;
-    pieSeries.chart()->setAnimationOptions(QChart::AnimationOption::NoAnimation);
-    activePieSlice.setExploded(true);
+    m_pieSeries.chart()->setAnimationOptions(QChart::AnimationOption::NoAnimation);
+    m_activePieSlice.setExploded(true);
     update(); 
 }
 
 void Square::pieScliceActive(bool state) {
     isHovered = state;
-    pieSeries.chart()->setAnimationOptions(QChart::AnimationOption::NoAnimation);
-    activePieSlice.setExploded(state);
+    m_pieSeries.chart()->setAnimationOptions(QChart::AnimationOption::NoAnimation);
+    m_activePieSlice.setExploded(state);
     update();
 }
 
 void Square::leaveEvent(QEvent* event)  {
     isHovered = false;
-    activePieSlice.setExploded(false);
+    m_activePieSlice.setExploded(false);
     update(); 
 }
 void Square::setColor(QString& hexColor) {

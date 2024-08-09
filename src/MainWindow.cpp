@@ -3,8 +3,15 @@
 #include "ChangeTypeDate.h"
 #include <QDate>
 #include <QFontMetrics>
+#include <QImage>
 
 MainWindow::MainWindow(Category* category, DatabaseManager* dbManager, QWidget* parent, Qt::WindowFlags f) : QWidget(parent, f), dbManager(*dbManager), category(*category) {
+    QVector<CategoryStr> currentCategoryList = dbManager->getAllCategoriesInfo();
+    if (!currentCategoryList.isEmpty())
+    {
+        category->categoryList = {};
+        category->categoryList = currentCategoryList;
+    }
     purchasesHistory = dbManager->getAllPurchasesInfo();
   
     currentDate = QDate::currentDate();
@@ -22,12 +29,12 @@ MainWindow::MainWindow(Category* category, DatabaseManager* dbManager, QWidget* 
     updateChartSeries();
 
 
-    QChartView* chartView = new QChartView(chart);
+    QChartView* chartView = new QChartView(this);
     chartView->setRenderHint(QPainter::Antialiasing);
-    chartView->setParent(this);
+    chartView->setChart(chart);
     chartView->setGeometry(30, 50, 600, 400);
-    chartView->setBackgroundBrush(Qt::NoBrush); 
-    chartView->setFrameStyle(QFrame::NoFrame);
+    chartView->setStyleSheet("background: transparent");
+    //chartView->backgroundRole();
 
     
     gridLayout.setAlignment(Qt::AlignCenter);
@@ -37,11 +44,14 @@ MainWindow::MainWindow(Category* category, DatabaseManager* dbManager, QWidget* 
     container->setGeometry(0, 25, 650, 100);
 
 
-    QPushButton* btn = new QPushButton("Add expense", this);
-    btn->setGeometry(230, 420, 200, 100);
-    btn->setStyleSheet("background-color: #ED2442; color: white; font-weight: bold; font: 14pt");
-    connect(btn, &QPushButton::clicked, this, &MainWindow::addExpenses);
+    QPushButton* addExpense = new QPushButton("Add expense", this);
+    addExpense->setGeometry(230, 420, 200, 100);
+    addExpense->setStyleSheet("background-color: #ED2442; color: white; font-weight: bold; font: 14pt");
+    connect(addExpense, &QPushButton::clicked, this, &MainWindow::addExpenses);
 
+
+
+    //Date
     btnDate = new QPushButton(currentDate.toString("yyyy"), this);
     btnDate->setGeometry(15, 220, 85, 70);
     btnDate->setStyleSheet("background-color: transparent; border: none; color: white; font-weight: bold;");
@@ -53,6 +63,8 @@ MainWindow::MainWindow(Category* category, DatabaseManager* dbManager, QWidget* 
     connect(btnDate, &QPushButton::clicked, this, &MainWindow::changeTypeDate);
     autoSizeFont(*btnDate);
 
+
+    //Date change
     QPushButton* btnUp = new QPushButton(this);
     btnUp->setIcon(QIcon(":/images/arrowUp.png")); 
     btnUp->setIconSize(QSize(32, 32)); 
@@ -77,7 +89,7 @@ MainWindow::MainWindow(Category* category, DatabaseManager* dbManager, QWidget* 
         if (typeDate == TypeDate::Monthly) currentDate = currentDate.addMonths(-1);
         updateDateLabel();
     });
-    setBackgroundImage(":/4015db3053c401bf5c6d3eef84d7c583.jpg");
+    backgroundImage = QPixmap(":/4015db3053c401bf5c6d3eef84d7c583.jpg");
         
 }
 
@@ -146,15 +158,14 @@ void MainWindow::onFadeInFinished() {
     disconnect(animation, &QPropertyAnimation::finished, this, &MainWindow::onFadeInFinished);
 }
 
-void MainWindow::setBackgroundImage(const QString& imagePath) {
-    QPixmap bkgnd(imagePath);
+void MainWindow::paintEvent(QPaintEvent* event) {
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
-    bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    int windowWidth = this->width();
+    int windowHeight = this->height();
 
-    QPalette palette;
-    palette.setBrush(QPalette::Window, bkgnd);
-    this->setPalette(palette);
-    this->setAutoFillBackground(true);
+    painter.drawPixmap(0, 0, windowWidth, windowHeight, backgroundImage);
 }
 
 QPair<QDate, QDate> MainWindow::getWeekRange(const QDate& date) {
@@ -166,10 +177,11 @@ QPair<QDate, QDate> MainWindow::getWeekRange(const QDate& date) {
 
 void MainWindow::addExpenses() {
     AddExpenses dlg(&category,this);
-    dlg.setFixedSize(250, 150);
+    //dlg.setFixedSize(250, 150);
     switch (dlg.exec()) {
     case QDialog::Accepted:
         qDebug() << "Accepted";
+        updateCategoryInfo(dlg.getCategory(), dlg.getColor());
         updatePurchasesInfo(dlg.getCategory(), dlg.getInput().toDouble(), dlg.getDate());
         break;
     case QDialog::Rejected:
@@ -205,6 +217,27 @@ void MainWindow::changeTypeDate() {
     default:
         qDebug() << "Unexpected";
     }
+}
+
+void MainWindow::updateCategoryInfo(const QString& name, const QString& colorHex) {
+    int index = -1;
+    for (int i = 0; i < category.categoryList.size(); i++) {
+        if (category.categoryList[i].name == name) {
+            index = i;
+            break;
+        }
+    }
+
+    if (index == -1)
+    {
+        CategoryStr categoryStr;
+        categoryStr.name = name;
+        categoryStr.colorHex = colorHex;
+        category.categoryList.append(categoryStr);
+    }
+    else
+        category.categoryList[index].colorHex = colorHex;
+    dbManager.insertCategoryInfo(category.categoryList);
 }
 
 void MainWindow::updatePurchasesInfo(const QString& name, qreal amount, const QDate& date) {
@@ -295,7 +328,7 @@ void MainWindow::updateChartSeries() {
 
     if (series->count() == 0)
     {
-        qDebug() << "Количество PieSlice равно нулю.";
+        qDebug() << "The number of PieSlice is zero";
         QPieSlice* slice = series->append("", 10);
         slice->setBrush(QColor("#036B6B"));
     }

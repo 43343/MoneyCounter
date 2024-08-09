@@ -38,6 +38,7 @@ int main(int argc, char* argv[])
             mainWindow->show();
             });
         registrationWindow->show();
+        
     }
     return a.exec();
 }

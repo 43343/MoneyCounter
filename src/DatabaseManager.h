@@ -20,7 +20,10 @@ public:
     bool authenticateUser(const QString& username, const QString& password);
 
     void insertPurchasesInfo(const PurchasesInfo& data);
+    void insertCategoryInfo(const QVector<CategoryStr>& data);
     QVector<PurchasesInfo> getAllPurchasesInfo();
+    QVector<CategoryStr> getAllCategoriesInfo();
 private:
     QString hashPassword(const QString& password);
+    QSqlDatabase db;
 };

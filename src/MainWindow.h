@@ -37,12 +37,16 @@ public:
 private:
 
     void addExpenses();
-    void changeTypeDate();
 
-    void setBackgroundImage(const QString& imagePath);
+
+    //Drawing background
+    QPixmap backgroundImage;
+    void paintEvent(QPaintEvent* event) override;
+
     QVector<PurchasesInfo> purchasesVisible;
     QVector<PurchasesInfo> purchasesHistory;
-    void updatePurchasesInfo(const QString& name, qreal amount, const QDate& date);
+    void updatePurchasesInfo(const QString& name, const qreal amount, const QDate& date);
+    void updateCategoryInfo(const QString& name, const QString& colorHex);
 
     void updateChartSeries();
     void initializePurchasesVisible();
@@ -51,17 +55,20 @@ private:
     DatabaseManager& dbManager;
     Category& category;
     QGridLayout gridLayout;
-    QPixmap backgroundImage;
+
 
     QDate currentDate;
     QPair<QDate, QDate> getWeekRange(const QDate& date);
 
+    //Date animation
     QGraphicsOpacityEffect* opacityEffect;
     QPropertyAnimation* animation;
     void onFadeOutFinished();
     void onFadeInFinished();
     QPushButton* btnDate;
     bool animatingDateRunning = false;
+
+    void changeTypeDate();
     TypeDate typeDate = TypeDate::Yearly;
 
     void autoSizeFont(QPushButton& btnLabelAutosize);

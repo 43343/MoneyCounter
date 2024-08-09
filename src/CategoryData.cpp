@@ -11,6 +11,6 @@ Category::Category() {
     { "Children", "#145214" },
     { "Sport", "#3342FF" },
     { "Travel", "#0A3330" },
-    { "Housing and utilities", "#FF336E", }
+    { "Housing", "#FF336E", }
     };
 }

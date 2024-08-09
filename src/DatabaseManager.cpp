@@ -2,7 +2,7 @@
 
 DatabaseManager::DatabaseManager()
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("data.db");
 
     if (!db.open()) {
@@ -20,10 +20,16 @@ DatabaseManager::DatabaseManager()
         }
         QString createTableQueryPurchasesHistory = "CREATE TABLE IF NOT EXISTS PurchasesHistory ("
             "indexCategory INTEGER,"
-            "amount REAL, "
-            "date TEXT)";
+            "amount REAL NOT NULL UNIQUE, "
+            "date TEXT NOT NULL)";
         if (!query.exec(createTableQueryPurchasesHistory)) {
             qDebug() << "Unable to create table 'PurchasesHistory':" << query.lastError().text();
+        }
+        QString createTableQueryCategoryList = "CREATE TABLE IF NOT EXISTS CategoryList ("
+            "name TEXT NOT NULL,"
+            "colorHex TEXT NOT NULL)";
+        if (!query.exec(createTableQueryCategoryList)) {
+            qDebug() << "Unable to create table 'CategoryList':" << query.lastError().text();
         }
     }
 }
@@ -93,6 +99,42 @@ QVector<PurchasesInfo> DatabaseManager::getAllPurchasesInfo() {
         item.indexCategory = query.value("indexCategory").toInt();
         item.amount = query.value("amount").toFloat();
         item.date = QDate::fromString(query.value("date").toString(), Qt::ISODate);
+
+        data.append(item);
+    }
+    return data;
+}
+
+void DatabaseManager::insertCategoryInfo(const QVector<CategoryStr>& data) {
+    QSqlQuery query(db);
+    if (!query.exec("DELETE FROM CategoryList")) {
+        qDebug() << "Unable to clear table 'CategoryList':" << query.lastError().text();
+        return;
+    }
+    for (const auto& category : data) {
+        query.prepare("INSERT INTO CategoryList (name, colorHex) VALUES (:name, :colorHex)");
+        query.bindValue(":name", category.name);
+        query.bindValue(":colorHex", category.colorHex);
+        if (!query.exec()) {
+            qDebug() << "Unable to insert into 'CategoryList':" << query.lastError().text();
+        }
+    }
+}
+
+QVector<CategoryStr> DatabaseManager::getAllCategoriesInfo() {
+    QVector<CategoryStr> data;
+
+    QSqlQuery query("SELECT name, colorHex FROM CategoryList");
+
+    if (!query.exec() || query.size() == 0) {
+        qDebug() << "Failed to retrieve data:" << query.lastError();
+        return { };
+    }
+
+    while (query.next()) {
+        CategoryStr item;
+        item.name = query.value("name").toString();
+        item.colorHex = query.value("colorHex").toString();
 
         data.append(item);
     }
