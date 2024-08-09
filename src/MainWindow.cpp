@@ -177,7 +177,7 @@ QPair<QDate, QDate> MainWindow::getWeekRange(const QDate& date) {
 
 void MainWindow::addExpenses() {
     AddExpenses dlg(&category,this);
-    //dlg.setFixedSize(250, 150);
+    dlg.setFixedSize(250, 200);
     switch (dlg.exec()) {
     case QDialog::Accepted:
         qDebug() << "Accepted";

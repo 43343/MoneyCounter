@@ -94,6 +94,12 @@ void AddExpenses::onCategoryChanged(int index) {
 
     categoryNameLabel->setVisible(isNewCategory);
     newCategoryNameEdit->setVisible(isNewCategory);
+
+    if (isNewCategory)
+        setFixedHeight(225);
+    else
+        setFixedHeight(200);
+
     for (auto item : m_category.categoryList)
     {
         if (comboBox->currentText() == item.name) {
