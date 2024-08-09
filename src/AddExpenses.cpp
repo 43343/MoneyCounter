@@ -1,5 +1,4 @@
 #include "AddExpenses.h"
-#include <QFontDatabase>
 #include <QFormLayout>
 #include <QLabel>
 #include <QWidget>

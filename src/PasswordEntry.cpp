@@ -1,4 +1,7 @@
 #include "PasswordEntry.h"
+#include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 PasswordEntry::PasswordEntry(DatabaseManager* dbManager, QWidget* parent, Qt::WindowFlags f) : QWidget(parent, f), dbManager(*dbManager)
 {

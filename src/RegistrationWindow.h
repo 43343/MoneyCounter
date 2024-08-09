@@ -1,10 +1,6 @@
 #pragma once
-#include <QPushButton>
-#include <QVBoxLayout>
 #include <QWidget>
 #include <QLineEdit>
-#include <QLabel>
-#include <QStyle>
 #include "DatabaseManager.h"
 
 class RegistrationWindow : public QWidget

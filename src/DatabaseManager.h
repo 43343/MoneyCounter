@@ -1,9 +1,5 @@
 #pragma once
 #include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QDebug>
-#include <QCryptographicHash>
 #include "CategoryData.h"
 #include <QVector>
 

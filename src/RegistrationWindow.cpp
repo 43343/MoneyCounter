@@ -2,6 +2,9 @@
 #include <QFormLayout>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 RegistrationWindow::RegistrationWindow(DatabaseManager* dbManager,  QWidget* parent, Qt::WindowFlags f) : QWidget(parent, f), dbManager(*dbManager)
 {

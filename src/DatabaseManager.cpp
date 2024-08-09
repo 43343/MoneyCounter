@@ -1,4 +1,8 @@
 #include "DatabaseManager.h"
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDebug>
+#include <QCryptographicHash>
 
 DatabaseManager::DatabaseManager()
 {

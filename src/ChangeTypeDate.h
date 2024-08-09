@@ -1,11 +1,7 @@
 #pragma once
 #include <QDialog>
-#include <QVBoxLayout>
 #include <QRadioButton>
-#include <QPushButton>
 #include <QButtonGroup>
-#include <QMessageBox>
-#include <QMetaEnum>
 #include <QString>
 
 class ChangeTypeDate : public QDialog

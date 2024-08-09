@@ -1,4 +1,6 @@
 #include "ChangeTypeDate.h"
+#include <QPushButton>
+#include <QVBoxLayout>
 
 ChangeTypeDate::ChangeTypeDate(int& activeIndex, QWidget* parent) :
     QDialog(parent)

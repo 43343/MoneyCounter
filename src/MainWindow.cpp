@@ -2,7 +2,6 @@
 #include "Square.h"
 #include "ChangeTypeDate.h"
 #include <QDate>
-#include <QFontMetrics>
 #include <QImage>
 
 MainWindow::MainWindow(Category* category, DatabaseManager* dbManager, QWidget* parent, Qt::WindowFlags f) : QWidget(parent, f), dbManager(*dbManager), category(*category) {
